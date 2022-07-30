@@ -5,6 +5,7 @@ metadata:
   labels:
     app: awesome-app
   annotations:
+    #Test restart container to apply new config using Reloader controller
     reloader.stakater.com/auto: "true"
   namespace: sandbox
 spec:
