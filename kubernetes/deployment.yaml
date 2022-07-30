@@ -9,7 +9,6 @@ metadata:
     reloader.stakater.com/auto: "true"
   namespace: sandbox
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: awesome-app
@@ -48,3 +47,25 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 8080
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: awesome-app
+  namespace: sandbox
+spec:
+  scaleTargetRef:
+    name: awesome-app
+  pollingInterval: 5
+  idleReplicaCount: 0
+  minReplicaCount: 1
+  # The period to wait after the last trigger reported active before scaling the resource back to 0.
+  # By default, it’s 5 minutes (300 seconds).
+  cooldownPeriod: 10
+  triggers:
+    - type: cron
+      metadata:
+        timezone: Asia/Ho_Chi_Minh
+        start: 58 * * * *
+        end: 59 * * * *
+        desiredReplicas: "1"
