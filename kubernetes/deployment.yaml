@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: awesome-app
+  labels:
+    app: awesome-app
+  annotations:
+    reloader.stakater.com/auto: "true"
+  namespace: sandbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: awesome-app
+  template:
+    metadata:
+      labels:
+        app: awesome-app
+    spec:
+      containers:
+        - name: awesome-app
+          image: duclm2609/awesome-app:0.0.1
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: awesome-app
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: awesome-app
+  namespace: sandbox
+data:
+  AWESOMEAPP_VERSION: 0.0.2
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: awesome-app
+  namespace: sandbox
+spec:
+  selector:
+    app: awesome-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
